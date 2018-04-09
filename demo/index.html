@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>组件demo</title>
+</head>
+
+<body>
+  <script src='https://unpkg.com/vue@2.2.6'></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="../dist/lgbui.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <div id="app">
+      <lqb-frame @changecompont="changecompont" :fault-com="iid"  test="true"  :enterprise-list="enterpriseList">
+        <lqb-form  v-model="values" :data="forms"  from-type="ListForm">
+            <h1 slot="header">
+                About Me
+              </h1>
+              <h1 slot="footer">
+                  AboutfooterMe
+                </h1>
+          <button>提交按钮位置</button>
+        </lqb-form>
+        <lqb-form v-model="values" :data="forms" from-type="LineForm">
+            <h1 slot="header">
+                About Me
+              </h1>
+            <h1 slot="footer">
+                AboutfooterMe
+              </h1>
+          <button>提交按钮位置</button>
+        </lqb-form>
+        <lqb-form v-model="values" :data="forms" from-type="RowForm">
+            <h1 slot="header">
+                About Me
+              </h1>
+            <h1 slot="footer">
+                AboutfooterMe
+              </h1>
+          <button>提交按钮位置</button>
+        </lqb-form>
+        
+      </lqb-frame>
+    </div>
+    <script>
+      var Main = {
+        name: 'test',
+        data() {
+          return {
+            enterpriseList:null,
+            iid:null,
+            forms:[
+              {"name":"Input",label:"金额","model":"Kist",placeholder:"金额"},
+              {"slotname":"header"},
+              {"name":"Select",label:"金sss额","model":"Kists",
+              placeholder:"金sss额",
+              changes:function(e){
+                console.log(e);
+              }
+            },
+            {"slotname":"footer"},
+              {"name":"DatePicker",label:"时间","model":"times",type:"datetime",placeholder:"请选择日期" },
+              {
+                "name":"Upload",
+                label:"头像",
+                "model":"files",
+                placeholder:"金额",
+                filelen:3,
+                opt:[{
+                  msg:"身份证原件",
+                  width:"180px"
+                },{
+                  msg:"身份证复印件",
+                  width:"280px"
+                },{
+                  msg:"职业证书",
+                  width:"200px"
+                }]
+              },
+            ],
+            rule:{
+              
+            },
+            values:{
+              "Tel":"18541414451",
+              InviteCode:"xssdsd",
+              InviteCodeState:false,
+              Kists:"1",
+              times:"",
+              files:[{
+                      src:"http://lc-pro.oss-cn-hzfinance.aliyuncs.com/enterprise/image/a48c4c2a5c014c3e8ced4e09cf09fe70.png"
+                    },
+                    {
+                      preview:"http://lc-pro.oss-cn-hzfinance.aliyuncs.com/enterprise/image/a48c4c2a5c014c3e8ced4e09cf09fe70.png",
+                      src:"http://lc-pro.oss-cn-hzfinance.aliyuncs.com/enterprise/image/a48c4c2a5c014c3e8ced4e09cf09fe70.png"
+                     }],
+              KistsOption:[
+                {label:"已审核",value:"1"},
+                {label:"未审核",value:"2"}
+              ],
+              MenberType:"1",
+              MenberTypeOption:[
+                {label:"已审核",value:"1"},
+                {label:"未审核",value:"2"}
+              ],
+              TotalInvestment:"32224",
+              AccountBalance:"32224",
+              TotalAccount:"2521"
+            },
+            tablelist:[{label:"标题",value:"model"},{label:"标题",value:"model"}],
+            tablelistdat:[],
+          }
+        },
+        mounted(){
+          var _this=this;
+          setTimeout(function(){
+            _this.iid=151;
+            _this.enterpriseList=[{"id":150,"enterpriseName":"150测试企业","enterpriseNum":"E00000000000515"},{"id":151,"enterpriseName":"150测11试企业","enterpriseNum":"E000000000005125"}]
+          },3000);
+        },
+        methods:{
+          changecompont:function(i){
+            console.log(i)
+          }
+        }
+      };
+      var Ctor = Vue.extend(Main)
+      new Ctor().$mount('#app')
+    </script>
+</body>
+
+</html>
