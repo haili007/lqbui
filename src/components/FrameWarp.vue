@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  name:"lqb-frame-warp",
   props: ["title"]
 };
 </script>

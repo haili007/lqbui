@@ -16,7 +16,20 @@
           <div style="width:500px;margin:50px auto;">
             <lqb-card space="20">
               <span slot="header">头部</span>
-              <div>我是内容</div>
+              <div>
+                <kz-table :data="list">
+                  <kz-table-col label="名称" prop="ss">
+                    <template>
+                      <div>
+                        <div class="test">
+                          {{dome}}
+                      </div>
+                      </div>
+                    </template>
+                  </kz-table-col>
+                  <kz-table-col label="日期" prop="ssdd"></kz-table-col>
+                </kz-table>
+              </div>
             </lqb-card>
           </div>
       </lqb-frame-warp>
@@ -28,7 +41,9 @@
       data() {
         return {
           enterpriseList:null,
+          list:[{},{}],
           iid:null,
+          dome:"ceshixia",
           rule:{
             
           }

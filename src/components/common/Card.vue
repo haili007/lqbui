@@ -10,6 +10,7 @@
 </template>
 <script>
 export default {
+  name:"lqb-card",
   computed: {
     padding() {
       return this.space ? this.space : "10";

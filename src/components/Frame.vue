@@ -15,6 +15,7 @@
 import Aside from "./common/Aside.vue";
 import Head from "./common/Head.vue";
 export default {
+  name:"lqb-frame",
   data() {
     var validateName = (rule, value, callback) => {
       if (!value) {
