@@ -55,7 +55,9 @@ export default {
             })
         }
         var list = this.data.map((row, i) => {
-            return <tr class={this.rowClassName&&this.rowClassName(row,i)}>
+            return <tr on-click={(e)=>{
+                this.$emit("click",{event:e,row:row,count:i})
+            }} class={this.rowClassName&&this.rowClassName(row,i)}>
                 {coms(row, i)}
             </tr>
         })

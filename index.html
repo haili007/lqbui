@@ -55,7 +55,7 @@
           </lqb-card>
         </div>
 
-        <kz-table :row-class-name="tableRowClassName" table-wdith="1800px" :data="list">
+        <kz-table @row-click="rowclick" :row-class-name="tableRowClassName" table-wdith="1800px" :data="list">
 
             <kz-table-col type="selected"></kz-table-col>
             <kz-table-col label="序号" type="index"></kz-table-col>
@@ -71,7 +71,6 @@
           <kz-table-col label="日期" edit  prop="bb" > </kz-table-col>
           <kz-table-col label="金额" edit prop="cc"></kz-table-col>
           <kz-table-col label="日期" edit  prop="bb" > </kz-table-col>
-  
           <kz-table-foot>
             <template >
               <tr>
@@ -155,6 +154,9 @@
         }, 3000);
       },
       methods: {
+        rowclick(e){
+          console.log(e);
+        },
         tableRowClassName(row, rowIndex) {
         if (rowIndex === 1) {
           return 'warning-row';

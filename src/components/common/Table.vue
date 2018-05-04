@@ -3,7 +3,7 @@
     <div class="hidden-columns" ref="hiddenColumns"><slot></slot></div>
     <table :style="'width:'+tableWdith" class="kz-basic-table" cellspacing="0" cellpadding="0" >
       <table-head  ref="tests" @select="changeSelect" :selects="selectData"  :col="childData" :data="data"></table-head>
-      <table-body :row-class-name="rowClassName" @select="changeSelect" :selects="selectData"  :col="childData" :col-component="childColComponent" :data="data"></table-body>
+      <table-body @click="handlerClick" :row-class-name="rowClassName" @select="changeSelect" :selects="selectData"  :col="childData" :col-component="childColComponent" :data="data"></table-body>
       <table-footer-dom :foot-component="footComponent"></table-footer-dom>
     </table>
     <span style="height:0;width:0px;display:block;overflow:hidden"><input type="checkbox"></span>
@@ -25,6 +25,9 @@ export default {
     };
   },
   methods: {
+    handlerClick(e){
+      this.$emit("row-click",e)
+    },
     addItem(data) {
       if (data.value == "all") {
         this.selectData = [];
