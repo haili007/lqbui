@@ -5,33 +5,83 @@
   <meta charset="utf-8">
   <title>组件demo</title>
 </head>
+
 <body>
   <script src='https://cdn.bootcss.com/vue/2.5.17-beta.0/vue.js'></script>
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
   <script src="http://localhost:8080/dist/lgbui.min.js"></script>
+  <style>
+    .kz-basic-table .warning-row {
+    background: oldlace;
+  }
+
+  .kz-basic-table .success-row {
+    background: #f0f9eb;
+  }
+  </style>
   <div id="app">
-    <lqb-frame @changecompont="changecompont" :fault-com="iid"  test="true"  :enterprise-list="enterpriseList">
+    <lqb-frame @changecompont="changecompont" :fault-com="iid" test="true" :enterprise-list="enterpriseList">
       <lqb-frame-warp title="栏目名称">
-          <div style="width:500px;margin:50px auto;">
-            <lqb-card space="20">
-              <span slot="header">头部</span>
-              <div>
-                <kz-table :data="list">
-                  <kz-table-col label="名称" prop="ss">
-                    <template>
-                      <div>
-                        <div class="test">
-                          {{dome}}
-                      </div>
-                      </div>
-                    </template>
-                  </kz-table-col>
-                  <kz-table-col label="日期" prop="ssdd"></kz-table-col>
-                </kz-table>
-              </div>
-            </lqb-card>
-          </div>
+        <div style="width:500px;margin:50px auto;">
+          <lqb-card space="20">
+            <span slot="header">头部</span>
+            <div>
+              <kz-table   :data="list">
+                <kz-table-col type="selected"></kz-table-col>
+                <kz-table-col label="序号" type="index"></kz-table-col>
+                <kz-table-col label="名称">
+                  <template slot-scope="scope">
+                    <div class="test">
+                      {{scope.row.bb}}sdsds试试看
+                    </div>
+                  </template>
+                </kz-table-col>
+                <kz-table-col label="日期" edit  prop="bb" >
+                 
+                </kz-table-col>
+                <kz-table-col label="金额" edit prop="cc"></kz-table-col>
+              </kz-table>
+            </div>
+          </lqb-card>
+          <lqb-card space="20">
+            <span slot="header">头部</span>
+            <div>
+              <kz-fuzzy @change="handlerChange" @keydown="send" v-model="selVal" :data="list" :filter="true" :opts="opts1"></kz-fuzzy>
+              <div style="height: 200px;"></div>
+              <kz-editable-fuzzy style="width: 200px;height:50px" @change="handlerChange" @keydown="send" v-model="selVal1" :data="list" :filter="true" :opts="opts1"></kz-editable-fuzzy>
+              <div style="height: 200px;"></div>
+            </div>
+          </lqb-card>
+        </div>
+
+        <kz-table :row-class-name="tableRowClassName" table-wdith="1800px" :data="list">
+
+            <kz-table-col type="selected"></kz-table-col>
+            <kz-table-col label="序号" type="index"></kz-table-col>
+          <kz-table-col label="名称">
+            <template slot-scope="scope">
+              <kz-editable-fuzzy style="width: 100%;height:100%"  @change="handlerChange" @keydown='send(scope,$event)' v-model="scope.row.aa" :data="list" :filter="true" :opts="opts1"></kz-editable-fuzzy>
+            </template>
+          </kz-table-col>
+          <kz-table-col label="日期" edit  prop="bb" > </kz-table-col>
+          <kz-table-col label="金额" edit prop="cc"></kz-table-col>
+          <kz-table-col label="日期" edit  prop="bb" > </kz-table-col>
+          <kz-table-col label="金额" edit prop="cc"></kz-table-col>
+          <kz-table-col label="日期" edit  prop="bb" > </kz-table-col>
+          <kz-table-col label="金额" edit prop="cc"></kz-table-col>
+          <kz-table-col label="日期" edit  prop="bb" > </kz-table-col>
+  
+          <kz-table-foot>
+            <template >
+              <tr>
+                <td>总价：</td>
+                <td>198</td>
+                <td>元</td>
+              </tr>
+            </template>
+          </kz-table-foot>
+        </kz-table>
       </lqb-frame-warp>
     </lqb-frame>
   </div>
@@ -40,24 +90,88 @@
       name: 'test',
       data() {
         return {
-          enterpriseList:null,
-          list:[{},{}],
-          iid:null,
-          dome:"ceshixia",
-          rule:{
-            
+          enterpriseList: null,
+          selVal:"",
+          selVal1:"1",
+          selData:[{
+            label:"adsdsa",
+            value:"10",
+          },{
+            label:"adsd111sa",
+            value:"110"
+          }],
+          opts1:[
+              {
+                label:"名称",
+                prop:"aa",
+              }
+              ,
+              {
+                label:"日期",
+                prop:"bb",
+              }
+              ,
+              {
+                label:"金额",
+                prop:"cc",
+              }
+          ],
+          opts:[{
+                label:"名称",
+                name:"aa",
+                formatter:function(row){
+                    return "<div>外部插入"+row.cc+"</div>"
+                },
+                clickHandler:function(e){
+                  console.log(e);
+                }
+              },
+              {
+                label:"日期",
+                name:"bb",
+              }
+              ,
+              {
+                label:"金额",
+                name:"cc",
+              }
+          ],
+          list: [{ aa: 11, bb: 33, cc: 988 }, { aa: 55, bb: 22, cc: 9818 }, { aa: 55, bb: 22, cc: 9818 },{ aa: 11, bb: 33, cc: 988 }, { aa: 55, bb: 22, cc: 9818 }, { aa: 55, bb: 22, cc: 9818 },{ aa: 11, bb: 33, cc: 988 }, { aa: 55, bb: 22, cc: 9818 }, { aa: 55, bb: 22, cc: 9818 }],
+          iid: null,
+          dome: "ceshixia",
+          test: {
+            aa:10,bb:222
+          },
+          handlerChange(e){
+            console.log(e);
           }
         }
       },
-      mounted(){
-        var _this=this;
-        setTimeout(function(){
-          _this.iid=151;
-          _this.enterpriseList=[{"id":150,"enterpriseName":"测试1","enterpriseNum":"E00000000000515"},{"id":151,"enterpriseName":"测试2","enterpriseNum":"E000000000005125"}]
-        },3000);
+      mounted() {
+        var _this = this;
+        setTimeout(function () {
+          _this.iid = 151;
+          _this.enterpriseList = [{ "id": 150, "enterpriseName": "测试1", "enterpriseNum": "E00000000000515" }, { "id": 151, "enterpriseName": "测试2", "enterpriseNum": "E000000000005125" }]
+        }, 3000);
       },
-      methods:{
-        changecompont:function(i){
+      methods: {
+        tableRowClassName(row, rowIndex) {
+        if (rowIndex === 1) {
+          return 'warning-row';
+        } else if (rowIndex === 3) {
+          return 'success-row';
+        }
+        return '';
+      },
+        send(scope,e){
+          console.log(scope,e)
+          e.handlerEnd();
+          scope.nextCompent.next.tabNext(scope.nextCompent)
+        },
+        buttonClick:function(e){
+          alert(222)
+        },
+        changecompont: function (i) {
           console.log(i)
         }
       }
