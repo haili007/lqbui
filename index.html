@@ -47,7 +47,9 @@
           <lqb-card space="20">
             <span slot="header">头部</span>
             <div>
-              <kz-fuzzy @change="handlerChange" @keydown="send" v-model="selVal" :data="list" :filter="true" :opts="opts1"></kz-fuzzy>
+              <kz-fuzzy @change="handlerChange" @keydown="send" v-model="selVal" :data="listtest" :filter="true">
+                <!-- <input slot="btn" @click="clickBtn" type="button" value="选择" /> -->
+              </kz-fuzzy>
               <div style="height: 200px;"></div>
               <kz-editable-fuzzy style="width: 200px;height:50px" @change="handlerChange" @keydown="send" v-model="selVal1" :data="list" :filter="true" :opts="opts1"></kz-editable-fuzzy>
               <div style="height: 200px;"></div>
@@ -89,6 +91,7 @@
       name: 'test',
       data() {
         return {
+          listtest: ["aabc","cbaaa","ssssss","sdsd"],
           enterpriseList: null,
           selVal:"",
           selVal1:"1",
@@ -154,6 +157,9 @@
         }, 3000);
       },
       methods: {
+        clickBtn(e){
+          alert("选择按钮被点击了")
+        },
         rowclick(e){
           console.log(e);
         },

@@ -27,12 +27,14 @@
               @mouseenter='handlerEnter(index)'
               :key="index" v-for="(item,index) in filterList"
                :class="'kz-list-item '+(current==index?'on':'')" >
-              <span v-if="opts.length>0" :key="index"
-               v-for="(opt,index) in opts"
-               :style="(!opt.width?'flex:1;':'')+'width:'+opt.width" 
-               >
-                  {{item[opt.prop]}}
-              </span>
+               <p style="display:flex;width:100%;height:100%" v-if="opts.length>0" >
+                 <span :key="index"
+                v-for="(opt,index) in opts"
+                :style="(!opt.width?'flex:1;':'')+'width:'+opt.width" 
+                >
+                    {{item[opt.prop]}}
+                </span>
+               </p>
               <span v-else style="flex:1"  >
                   {{item}}
               </span>
@@ -124,7 +126,9 @@ export default {
     },
     opts: {
       type: Array,
-      default: []
+      default: function () {
+        return []
+      }
     },
     filter: {
       type: Boolean,
@@ -163,7 +167,7 @@ export default {
     handlerClick(row) {
       this.fold = !this.fold;
       if (typeof row == "number" || typeof row == "string") {
-        this.inputValue = row[this.opts[0].prop];
+        this.inputValue = row;
       }else{
         this.inputValue = row[this.opts[0].prop];
       }
