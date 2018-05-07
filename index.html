@@ -85,6 +85,15 @@
         </kz-table>
       </lqb-frame-warp>
     </lqb-frame>
+
+    <kz-dialog :visible.sync="show" width="30%"  >
+      <div slot="title">提示</div>
+      <div>这是内容</div>
+      <div slot="footer">
+        <input type="button" value="确定" />
+      </div>
+    </kz-dialog>
+
   </div>
   <script>
     var Main = {
@@ -93,6 +102,7 @@
         return {
           listtest: ["aabc","cbaaa","ssssss","sdsd"],
           enterpriseList: null,
+          show:true,
           selVal:"",
           selVal1:"1",
           selData:[{

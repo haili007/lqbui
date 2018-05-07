@@ -40,7 +40,7 @@ export default {
   beforeCreate() {
     var head = document.getElementsByTagName("HEAD").item(0);
     var style = document.createElement("link");
-    style.href = "https://at.alicdn.com/t/font_469943_2rktmyo0d1v2t9.css";
+    style.href = "https://at.alicdn.com/t/font_469943_yzavdx9ptjcbx1or.css";
     style.rel = "stylesheet";
     style.type = "text/css";
     head.appendChild(style);
