@@ -21,44 +21,9 @@
   }
   </style>
   <div id="app">
-    <lqb-frame @changecompont="changecompont" :fault-com="iid" test="true" :enterprise-list="enterpriseList">
+    <lqb-frame @tab-change="tabChange" @changecompont="changecompont" @changestyle="changestyle" :fault-com="iid"  test="true"  :enterprise-list="enterpriseList"  :nav-list="navList" :current-position="currentPosition">
       <lqb-frame-warp title="栏目名称">
-        <div style="width:500px;margin:50px auto;">
-          <lqb-card space="20">
-            <span slot="header">头部</span>
-            <div>
-              <kz-table   :data="list">
-                <kz-table-col type="selected"></kz-table-col>
-                <kz-table-col label="序号" type="index"></kz-table-col>
-                <kz-table-col label="名称">
-                  <template slot-scope="scope">
-                    <div class="test">
-                      {{scope.row.bb}}sdsds试试看
-                    </div>
-                  </template>
-                </kz-table-col>
-                <kz-table-col label="日期" edit  prop="bb" >
-                 
-                </kz-table-col>
-                <kz-table-col label="金额" edit prop="cc"></kz-table-col>
-              </kz-table>
-            </div>
-          </lqb-card>
-          <lqb-card space="20">
-            <span slot="header">头部</span>
-            <div>
-              <kz-fuzzy @change="handlerChange" @keydown="send" v-model="selVal" :data="listtest" :filter="true">
-                <!-- <input slot="btn" @click="clickBtn" type="button" value="选择" /> -->
-              </kz-fuzzy>
-              <div style="height: 200px;"></div>
-              <kz-editable-fuzzy style="width: 200px;height:50px" @change="handlerChange" @keydown="send" v-model="selVal1" :data="list" :filter="true" :opts="opts1"></kz-editable-fuzzy>
-              <div style="height: 200px;"></div>
-            </div>
-          </lqb-card>
-        </div>
-
         <kz-table @row-click="rowclick" :row-class-name="tableRowClassName" table-wdith="1800px" :data="list">
-
             <kz-table-col type="selected"></kz-table-col>
             <kz-table-col label="序号" type="index"></kz-table-col>
           <kz-table-col label="名称">
@@ -102,9 +67,11 @@
         return {
           listtest: ["aabc","cbaaa","ssssss","sdsd"],
           enterpriseList: null,
-          show:true,
+          show:false,
           selVal:"",
           selVal1:"1",
+          currentPosition:0,
+          navList:null,
           selData:[{
             label:"adsdsa",
             value:"10",
@@ -128,26 +95,6 @@
                 prop:"cc",
               }
           ],
-          opts:[{
-                label:"名称",
-                name:"aa",
-                formatter:function(row){
-                    return "<div>外部插入"+row.cc+"</div>"
-                },
-                clickHandler:function(e){
-                  console.log(e);
-                }
-              },
-              {
-                label:"日期",
-                name:"bb",
-              }
-              ,
-              {
-                label:"金额",
-                name:"cc",
-              }
-          ],
           list: [{ aa: 11, bb: 33, cc: 988 }, { aa: 55, bb: 22, cc: 9818 }, { aa: 55, bb: 22, cc: 9818 },{ aa: 11, bb: 33, cc: 988 }, { aa: 55, bb: 22, cc: 9818 }, { aa: 55, bb: 22, cc: 9818 },{ aa: 11, bb: 33, cc: 988 }, { aa: 55, bb: 22, cc: 9818 }, { aa: 55, bb: 22, cc: 9818 }],
           iid: null,
           dome: "ceshixia",
@@ -160,11 +107,11 @@
         }
       },
       mounted() {
-        var _this = this;
-        setTimeout(function () {
-          _this.iid = 151;
-          _this.enterpriseList = [{ "id": 150, "enterpriseName": "测试1", "enterpriseNum": "E00000000000515" }, { "id": 151, "enterpriseName": "测试2", "enterpriseNum": "E000000000005125" }]
-        }, 3000);
+        var _this=this;
+         _this.iid=151;
+        _this.enterpriseList=[{"id":150,"enterpriseName":"测试1 ","enterpriseNum":"E00000000000515"},{"id":151,"enterpriseName":"测试2","enterpriseNum":"E000000000005125"}];
+        _this.navList=[{name:'menu',content:'采购',notice:true},{name:'trade',content:'销售',notice:false},{name:'store',content:'仓库',notice:true},{name:'money',content:'资金',notice:true},{name:'material',content:'资料',notice:true},{name:'set',content:'设置',notice:true}];
+        _this.currentPosition=0;
       },
       methods: {
         clickBtn(e){
@@ -183,14 +130,20 @@
       },
         send(scope,e){
           console.log(scope,e)
-          e.handlerEnd();
-          scope.nextCompent.next.tabNext(scope.nextCompent)
+          //e.handlerEnd();
+          //scope.nextCompent.next.tabNext(scope.nextCompent)
         },
         buttonClick:function(e){
           alert(222)
         },
         changecompont: function (i) {
           console.log(i)
+        },
+        changestyle:function(i){
+          console.log(i)
+        },
+        tabChange(index){
+          this.currentPosition=index;
         }
       }
     };
