@@ -1,9 +1,9 @@
 <template>
 <div>
   <div class="lqbui-layout">
-      <lqb-aside  @isload="loaded"  :test="test" :fold="fold"></lqb-aside>
-      <lqb-head  @changecompont="changecompont" :enterprise-list="enterpriseList" :fault-com="faultCom"></lqb-head>
-        <div class="lqbui-content">
+      <lqb-aside  @isload="loaded"  :test="test" :fold="fold" :current-position="currentPosition" @left-change="leftChange" :toggle="toggle"></lqb-aside>
+      <lqb-head   @tab-change="tabChange" @changecompont="changecompont" @changestyle="changestyle" :enterprise-list="enterpriseList" :fault-com="faultCom" :nav-list="navList" :current-position="currentPosition"></lqb-head>
+        <div class="lqbui-content" :style="'left:'+left+'px'">
             <slot></slot>
         </div>   
   </div>
@@ -29,10 +29,12 @@ export default {
       }
     };
     return {
-      load: true
+      load: true,
+      left:180,
+      toggle:false
     };
   },
-  props: ["test", "fold", "enterpriseList", "faultCom"],
+  props: ["test", "fold", "enterpriseList", "faultCom","navList","currentPosition"],
   components: {
     "lqb-aside": Aside,
     "lqb-head": Head
@@ -40,7 +42,7 @@ export default {
   beforeCreate() {
     var head = document.getElementsByTagName("HEAD").item(0);
     var style = document.createElement("link");
-    style.href = "https://at.alicdn.com/t/font_469943_yzavdx9ptjcbx1or.css";
+     style.href = "https://at.alicdn.com/t/font_469943_yzavdx9ptjcbx1or.css";
     style.rel = "stylesheet";
     style.type = "text/css";
     head.appendChild(style);
@@ -51,8 +53,21 @@ export default {
       this.load = false;
     },
     changecompont(i) {
-        console.log(i)
+      console.log(i);
       this.$emit("changecompont", i);
+    },
+    changestyle(i){
+      console.log(i);
+      this.$emit("changestyle", i);
+    },
+    tabChange(index){
+        console.log(index);
+        this.$emit('tab-change', index)
+    },
+    leftChange(leftMsg){
+      console.log(leftMsg);
+      this.left=leftMsg.left;
+      this.toggle=leftMsg.toggle;
     }
   }
 };
@@ -72,7 +87,8 @@ export default {
   clear: both;
 }
 .lqbui-content {
-  margin-left: 160px;
-  margin-top: 50px;
+  
+    margin-left: 180px;
+    margin-top: 50px;
 }
 </style>

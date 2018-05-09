@@ -4,7 +4,7 @@
   top: 50px;
   bottom: 0;
   z-index: 99;
-  width: 160px;
+  width: 180px;
   overflow-x: hidden;
 }
 .lqbui-bg-black {
@@ -15,6 +15,7 @@
   height: 100%;
   overflow-x: hidden;
 }
+.lqbui-nav-toggle,
 .lqbui-nav-tree {
   position: relative;
   background-color: #393d49;
@@ -22,8 +23,14 @@
   border-radius: 2px;
   font-size: 0;
   box-sizing: border-box;
-  width: 160px;
+  width: 180px;
   padding: 0;
+}
+.lqbui-nav-toggle {
+  text-align: center;
+  height: 25px;
+  line-height: 25px;
+  background-color: #565a65;
 }
 .lqbui-nav-tree * {
   font-size: 14px;
@@ -45,23 +52,26 @@
 }
 
 .lqbui-nav-tree .lqbui-nav-item a {
-  height: 45px;
-  line-height: 45px;
+  height: 40px;
+  line-height: 40px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
   padding: 0 20px;
+  padding-left: 37px;
   color: #fff;
   transition: all 0.3s;
   -webkit-transition: all 0.3s;
+}
+.lqbui-nav-tree .lqbui-nav-child a {
+  padding-left: 20px;
 }
 .lqbui-nav-child {
   left: 0;
   top: 65px;
   min-width: 100%;
   line-height: 36px;
-  padding: 5px 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+  background-color: #393d49;
   border: 1px solid #d2d2d2;
   z-index: 100;
   border-radius: 2px;
@@ -74,9 +84,8 @@
 }
 .lqbui-nav-title {
   display: block;
-  background: rgba(177, 178, 179, 0.3);
+  background-color: #2b2e37;
   cursor: pointer;
-  box-shadow: 12px 3px 5px rgba(1, 1, 1, 0.2);
 }
 .lqbui-nav-title:hover {
   background: rgba(177, 178, 179, 0.1);
@@ -98,18 +107,29 @@
   right: 10px;
   top: 0px;
 }
+.lqbui-nav-item i.lqbui-nav-icon {
+  left: 20px;
+}
+.lqbui-nav-child i.lqbui-nav-icon {
+  position: static;
+}
+.lqbui-nav-toggle .lqbui-nav-icon {
+  right: 45%;
+  top: auto;
+}
 </style>
 <template>
   <div class="lqbui-side lqbui-bg-black"> 
    <div class="lqbui-side-scroll"> 
+    <div class="lqbui-nav-toggle" :style="toggle?'width:50px':'width:180px'" @click='leftMove()'><span class="lqbui-nav-icon icon iconfont icon-xiangxiajiantou"></span></div>
     <ul class="lqbui-nav-tree"> 
-     <li :key="index" v-for="(item,index) in menu" class="lqbui-nav-item"> 
-            <span @click='toggleFold(index)' class="lqbui-nav-title">
+     <li :key="index" v-for="(item,index) in position[currentPosition]" class="lqbui-nav-item"> 
+            <span @click='toggleFold(index)' class="lqbui-nav-title"><i :class="'lqbui-nav-icon icon iconfont '+item.icon"></i>
             <a :style="(locPath==item.path.replace(' ',''))?'color: #72feff':''"  :href="item.path">{{item.name}}</a><span v-if="item.child.length" :class="'lqbui-nav-icon icon iconfont '+(item.fold?'icon-shangjiantou':'icon-xiajiantou')"></span>
             </span> 
             <dl v-show="item.fold" v-if="item.child.length" class="lqbui-nav-child"> 
-            <dd :key="index1" v-for="(item1,index1) in item.child" > 
-                <a :style="(locPath==item1.path.replace(' ',''))?((item.fold=true)&&'color: #72feff'):''" :href="item1.path">{{item1.name}}</a> 
+            <dd :key="index1" v-for="(item1,index1) in item.child" @click="contentChange(currentPosition,index1)" :style="tabStyle[currentPosition][index1]">
+                <a :style="(locPath==item1.path.replace(' ',''))?((item.fold=true)&&'color: #72feff'):''" :href="item1.path"><i :class="'lqbui-nav-icon icon iconfont '+item1.icon"  ></i> {{item1.name}}<span v-show="item1.notice" style="border: 4px solid red;border-radius:4px;position: absolute;z-index: 1000;margin-top: 4%;"></span></a> 
             </dd>  
             </dl> 
       </li> 
@@ -126,10 +146,18 @@ let ajax = require("ajax");
   (window.auth_token = ""),
   (window.systemId = "");
 export default {
-  props: ["test", "fold"],
+  props: ["test", "fold", "currentPosition","toggle"],
   data() {
     return {
-      menu: [],
+      position: {
+        0: [],
+        1: [],
+        2: [],
+        3: [],
+        4: [],
+        5: []
+      },
+      tabStyle: { 0: [], 1: [],2: [],3:[],4:[],5:[] },
       defalut: false,
       locPath:
         location.pathname + location.hash == "/"
@@ -141,72 +169,428 @@ export default {
     let _this = this;
     if (this.test) {
       userInfo = {};
-      this.menu = this.setMenuData([
-        {
-          id: 18,
-          systemId: 29,
-          parentId: 0,
-          name: "栏目一",
-          nickname: "栏目一",
-          description: "栏目一",
-          path: "#/entreprise.html",
-          icon: "",
-          sort: 0,
-          createTime: "2017-10-09 11:03:32",
-          updateTime: "2017-10-09 14:46:56",
-          flag: "1",
-          rootId: 0,
-          functionList: null
-        },
-        {
-          id: 20,
-          systemId: 29,
-          parentId: 0,
-          name: "栏目二",
-          nickname: "栏目二",
-          description: "栏目二",
-          path: "#/property_all.html",
-          icon: "",
-          sort: 0,
-          createTime: "2017-10-09 15:29:18",
-          updateTime: "2017-11-09 13:20:29",
-          flag: "1",
-          rootId: 0,
-          functionList: null
-        },
-        {
-          id: 21,
-          systemId: 29,
-          parentId: 0,
-          name: "栏目三",
-          nickname: "栏目三",
-          description: "栏目三",
-          path: "#/property_bag.html",
-          icon: "",
-          sort: 1,
-          createTime: "2017-10-09 15:29:46",
-          updateTime: "2017-10-24 17:02:04",
-          flag: "1",
-          rootId: 0,
-          functionList: null
-        },
-        {
-          id: 78,
-          systemId: 29,
-          parentId: 20,
-          name: "子栏目",
-          nickname: "子栏目",
-          description: "子栏目",
-          path: "#/property.html",
-          icon: "",
-          sort: 0,
-          createTime: "2017-10-24 16:15:46",
-          updateTime: "2017-11-09 13:20:46",
-          flag: "1",
-          rootId: 0,
-          functionList: null
-        }
-      ]);
+      // console.log(this.currentPosition);
+      let data = {
+        0: [
+          {
+            id: 1,
+            systemId: 0,
+            parentId: 0,
+            name: "快准采购",
+            nickname: "栏目一",
+            description: "栏目一",
+            path: "#/entreprise.html",
+            icon: "icon-gouwuche",
+            sort: 0,
+            createTime: "2017-10-09 11:03:32",
+            updateTime: "2017-10-09 14:46:56",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 2,
+            systemId: 0,
+            parentId: 0,
+            name: "快准活动",
+            nickname: "栏目二",
+            description: "栏目二",
+            path: "#/property_all.html",
+            icon: "icon-shezhi",
+            sort: 0,
+            createTime: "2017-10-09 15:29:18",
+            updateTime: "2017-11-09 13:20:29",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 3,
+            systemId: 0,
+            parentId: 0,
+            name: "采购入库",
+            nickname: "栏目三",
+            description: "栏目三",
+            path: "#/property_bag.html",
+            icon: "",
+            sort: 1,
+            createTime: "2017-10-09 15:29:46",
+            updateTime: "2017-10-24 17:02:04",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 4,
+            systemId: 0,
+            parentId: 1,
+            name: "采购订单",
+            nickname: "子栏目",
+            description: "子栏目",
+            path: "#/property.html",
+            icon: "icon-xiangyoujiantou",
+            sort: 0,
+            notice:true,
+            createTime: "2017-10-24 16:15:46",
+            updateTime: "2017-11-09 13:20:46",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 5,
+            systemId: 0,
+            parentId: 1,
+            name: "采购订单查询",
+            nickname: "子栏目",
+            description: "子栏目",
+            path: "#/property.html",
+            icon: "icon-xiangyoujiantou",
+            sort: 0,
+            notice:false,
+            createTime: "2017-10-24 16:15:46",
+            updateTime: "2017-11-09 13:20:46",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          }
+        ],
+        1: [
+          {
+            id: 1,
+            systemId: 0,
+            parentId: 0,
+            name: "快准商城订单",
+            nickname: "栏目一",
+            description: "栏目一",
+            path: "#/entreprise.html",
+            icon: "",
+            sort: 0,
+            createTime: "2017-10-09 11:03:32",
+            updateTime: "2017-10-09 14:46:56",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 2,
+            systemId: 0,
+            parentId: 0,
+            name: "快准销售",
+            nickname: "栏目二",
+            description: "栏目二",
+            path: "#/property_all.html",
+            icon: "",
+            sort: 0,
+            createTime: "2017-10-09 15:29:18",
+            updateTime: "2017-11-09 13:20:29",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 3,
+            systemId: 0,
+            parentId: 0,
+            name: "销售出库",
+            nickname: "栏目三",
+            description: "栏目三",
+            path: "#/property_bag.html",
+            icon: "",
+            sort: 1,
+            createTime: "2017-10-09 15:29:46",
+            updateTime: "2017-10-24 17:02:04",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 4,
+            systemId: 0,
+            parentId: 1,
+            name: "销售订单",
+            nickname: "子栏目",
+            description: "子栏目",
+            path: "#/property.html",
+            icon: "icon-xiangyoujiantou",
+            sort: 0,
+            createTime: "2017-10-24 16:15:46",
+            updateTime: "2017-11-09 13:20:46",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          }
+        ],
+        2:[
+          {
+            id: 1,
+            systemId: 0,
+            parentId: 0,
+            name: "快准仓库",
+            nickname: "栏目一",
+            description: "栏目一",
+            path: "#/entreprise.html",
+            icon: "",
+            sort: 0,
+            createTime: "2017-10-09 11:03:32",
+            updateTime: "2017-10-09 14:46:56",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 2,
+            systemId: 0,
+            parentId: 0,
+            name: "快准销售",
+            nickname: "栏目二",
+            description: "栏目二",
+            path: "#/property_all.html",
+            icon: "",
+            sort: 0,
+            createTime: "2017-10-09 15:29:18",
+            updateTime: "2017-11-09 13:20:29",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 3,
+            systemId: 0,
+            parentId: 0,
+            name: "销售出库",
+            nickname: "栏目三",
+            description: "栏目三",
+            path: "#/property_bag.html",
+            icon: "",
+            sort: 1,
+            createTime: "2017-10-09 15:29:46",
+            updateTime: "2017-10-24 17:02:04",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 4,
+            systemId: 0,
+            parentId: 1,
+            name: "销售订单",
+            nickname: "子栏目",
+            description: "子栏目",
+            path: "#/property.html",
+            icon: "icon-xiangyoujiantou",
+            sort: 0,
+            createTime: "2017-10-24 16:15:46",
+            updateTime: "2017-11-09 13:20:46",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          }
+        ],
+        3:[
+          {
+            id: 1,
+            systemId: 0,
+            parentId: 0,
+            name: "快准资金",
+            nickname: "栏目一",
+            description: "栏目一",
+            path: "#/entreprise.html",
+            icon: "",
+            sort: 0,
+            createTime: "2017-10-09 11:03:32",
+            updateTime: "2017-10-09 14:46:56",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 2,
+            systemId: 0,
+            parentId: 0,
+            name: "快准销售",
+            nickname: "栏目二",
+            description: "栏目二",
+            path: "#/property_all.html",
+            icon: "",
+            sort: 0,
+            createTime: "2017-10-09 15:29:18",
+            updateTime: "2017-11-09 13:20:29",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 3,
+            systemId: 0,
+            parentId: 0,
+            name: "销售出库",
+            nickname: "栏目三",
+            description: "栏目三",
+            path: "#/property_bag.html",
+            icon: "",
+            sort: 1,
+            createTime: "2017-10-09 15:29:46",
+            updateTime: "2017-10-24 17:02:04",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 4,
+            systemId: 0,
+            parentId: 1,
+            name: "销售订单",
+            nickname: "子栏目",
+            description: "子栏目",
+            path: "#/property.html",
+            icon: "icon-xiangyoujiantou",
+            sort: 0,
+            createTime: "2017-10-24 16:15:46",
+            updateTime: "2017-11-09 13:20:46",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          }
+        ],
+        4:[
+          {
+            id: 1,
+            systemId: 0,
+            parentId: 0,
+            name: "快准资料",
+            nickname: "栏目一",
+            description: "栏目一",
+            path: "#/entreprise.html",
+            icon: "",
+            sort: 0,
+            createTime: "2017-10-09 11:03:32",
+            updateTime: "2017-10-09 14:46:56",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 2,
+            systemId: 0,
+            parentId: 0,
+            name: "快准销售",
+            nickname: "栏目二",
+            description: "栏目二",
+            path: "#/property_all.html",
+            icon: "",
+            sort: 0,
+            createTime: "2017-10-09 15:29:18",
+            updateTime: "2017-11-09 13:20:29",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 3,
+            systemId: 0,
+            parentId: 0,
+            name: "销售出库",
+            nickname: "栏目三",
+            description: "栏目三",
+            path: "#/property_bag.html",
+            icon: "",
+            sort: 1,
+            createTime: "2017-10-09 15:29:46",
+            updateTime: "2017-10-24 17:02:04",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 4,
+            systemId: 0,
+            parentId: 1,
+            name: "销售订单",
+            nickname: "子栏目",
+            description: "子栏目",
+            path: "#/property.html",
+            icon: "icon-xiangyoujiantou",
+            sort: 0,
+            createTime: "2017-10-24 16:15:46",
+            updateTime: "2017-11-09 13:20:46",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          }
+        ],
+        5:[
+          {
+            id: 1,
+            systemId: 0,
+            parentId: 0,
+            name: "快准设置",
+            nickname: "栏目一",
+            description: "栏目一",
+            path: "#/entreprise.html",
+            icon: "",
+            sort: 0,
+            createTime: "2017-10-09 11:03:32",
+            updateTime: "2017-10-09 14:46:56",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 2,
+            systemId: 0,
+            parentId: 0,
+            name: "快准销售",
+            nickname: "栏目二",
+            description: "栏目二",
+            path: "#/property_all.html",
+            icon: "",
+            sort: 0,
+            createTime: "2017-10-09 15:29:18",
+            updateTime: "2017-11-09 13:20:29",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 3,
+            systemId: 0,
+            parentId: 0,
+            name: "销售出库",
+            nickname: "栏目三",
+            description: "栏目三",
+            path: "#/property_bag.html",
+            icon: "",
+            sort: 1,
+            createTime: "2017-10-09 15:29:46",
+            updateTime: "2017-10-24 17:02:04",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          },
+          {
+            id: 4,
+            systemId: 0,
+            parentId: 1,
+            name: "销售订单",
+            nickname: "子栏目",
+            description: "子栏目",
+            path: "#/property.html",
+            icon: "icon-xiangyoujiantou",
+            sort: 0,
+            createTime: "2017-10-24 16:15:46",
+            updateTime: "2017-11-09 13:20:46",
+            flag: "1",
+            rootId: 0,
+            functionList: null
+          }
+        ]
+      };
+      console.log(this.currentPosition);
+      for(let i=0;i<6;i++){
+        this.position[i] = this.setMenuData(data[i]);
+      }
+      // this.position.trade = this.setMenuData();
     } else {
       this.getUserMenu();
     }
@@ -222,7 +606,7 @@ export default {
       let menu = [],
         temp = {};
       for (let k = 0; k < data.length; k++) {
-        data[k].fold = this.fold ? this.fold : this.defalut;
+        data[k].fold = this.fold ? this.fold : !this.defalut;
         if (data[k].parentId == 0 || !temp[data[k].parentId]) {
           menu.push(data[k]);
           temp[data[k].id] = data[k];
@@ -276,7 +660,27 @@ export default {
       }
     },
     toggleFold(i) {
-      this.menu[i].fold = !this.menu[i].fold;
+      this.position[0][i].fold = !this.position[0][i].fold;
+      this.position[1][i].fold = !this.position[1][i].fold;
+      this.position[2][i].fold = !this.position[2][i].fold;
+      this.position[3][i].fold = !this.position[3][i].fold;
+      this.position[4][i].fold = !this.position[4][i].fold;
+      this.position[5][i].fold = !this.position[5][i].fold;
+    },
+    contentChange(currentPosition, i) {
+      this.tabStyle = { 0: [], 1: [] ,2: [],3:[],4:[],5:[]};
+      Vue.set(this.tabStyle[currentPosition], i, {
+        "background-color": "#ff5d6e"
+      });
+      // console.log(this.tabStyle[currentPosition][i])
+    },
+    leftMove(){
+        var leftMsg={
+          'toggle':!this.toggle,
+          'left':!this.toggle?50:180
+        }
+        console.log(leftMsg.left);
+      this.$emit('left-change', leftMsg)
     }
   }
 };

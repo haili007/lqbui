@@ -147,8 +147,15 @@ export default {
       }
       let menu = this.$refs.droplist;
       if (menu) {
-        let target = this.$refs.droplist.children[1].children[this.current];
-        scrollIntoView(menu, target);
+        //console.log(this.$refs)
+        try {
+          if(menu.children.length>1){
+            let target = this.$refs.droplist.children[1].children[this.current];
+          }else{
+            let target = this.$refs.droplist.children[0].children[this.current];
+          }
+          scrollIntoView(menu, target);
+        } catch (error) { }
       }
       if (e.code != "Tab") {
         this.fold = false;
