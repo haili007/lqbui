@@ -15,6 +15,10 @@ export default {
         col: {
             type: Array,
             default: []
+        },
+        width: {
+            type: String,
+            default: ""
         }
     },
     methods: {
@@ -23,11 +27,19 @@ export default {
     render(h) {
         var coms = this.col.map(item => {
             if (item.type != "selected") {
-                return <th>
+                return <th style={
+                    {
+                        width:this.width
+                    }
+                }>
                     {item.label}
                 </th>
             } else {
-                return <th>
+                return <th style={
+                    {
+                        width:this.width
+                    }
+                }>
                     <input value="all" on-click={(e) => {
                         this.$emit("select",{ value: "all", checked: e.target.checked })
                     }} type="checkbox" checked={this.selects.length==this.data.length} />

@@ -106,16 +106,12 @@ export default {
         }
       }
       if (this.width && data.counts == 0) {
-        return <td style={{
-          width: (typeof width == "number") ? (width + "px") : width,
-        }}>
+        return <td>
           {cells()}
         </td>
       }
       else {
-        return <td style={{
-          width: (this.type == "index" || this.type == "selected") ? "15px" : "60px",
-        }}>
+        return <td>
           {cells()}
         </td>
       }

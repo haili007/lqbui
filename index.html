@@ -23,7 +23,42 @@
   <div id="app">
     <lqb-frame @tab-change="tabChange" @changecompont="changecompont" @changestyle="changestyle" :fault-com="iid"  test="true"  :enterprise-list="enterpriseList"  :nav-list="navList" :current-position="currentPosition">
       <lqb-frame-warp title="栏目名称">
+        <div style="width:500px;margin:50px auto;">
+          <lqb-card space="20">
+            <span slot="header">头部</span>
+            <div>
+              <kz-table   :data="list">
+                <kz-table-col type="selected"></kz-table-col>
+                <kz-table-col label="序号" type="index"></kz-table-col>
+                <kz-table-col label="名称">
+                  <template slot-scope="scope">
+                    <div class="test">
+                      {{scope.row.bb}}sdsds试试看
+                    </div>
+                  </template>
+                </kz-table-col>
+                <kz-table-col label="日期" edit  prop="bb" >
+                 
+                </kz-table-col>
+                <kz-table-col label="金额" edit prop="cc"></kz-table-col>
+              </kz-table>
+            </div>
+          </lqb-card>
+          <lqb-card space="20">
+            <span slot="header">头部</span>
+            <div>
+              <kz-fuzzy @change="handlerChange" @keydown="send" v-model="selVal" :data="listtest" :filter="true">
+                <!-- <input slot="btn" @click="clickBtn" type="button" value="选择" /> -->
+              </kz-fuzzy>
+              <div style="height: 200px;"></div>
+              <kz-editable-fuzzy style="width: 200px;height:50px" @change="handlerChange" @keydown="send" v-model="selVal1" :data="list" :filter="true" :opts="opts1"></kz-editable-fuzzy>
+              <div style="height: 200px;"></div>
+            </div>
+          </lqb-card>
+        </div>
+
         <kz-table @row-click="rowclick" :row-class-name="tableRowClassName" table-wdith="1800px" :data="list">
+
             <kz-table-col type="selected"></kz-table-col>
             <kz-table-col label="序号" type="index"></kz-table-col>
           <kz-table-col label="名称">

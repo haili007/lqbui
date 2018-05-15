@@ -14,6 +14,7 @@
 import tableHead from "../table/TableHead";
 import tableBody from "../table/TableBody";
 import TableFooterDom from "../table/TableFooterDom";
+let lastClickTime=0;
 export default {
   name: "kz-table",
   data() {
@@ -26,7 +27,12 @@ export default {
   },
   methods: {
     handlerClick(e){
-      this.$emit("row-click",e)
+      if(e.event.timeStamp-lastClickTime>300){
+        this.$emit("row-click",e);
+      }else{
+        this.$emit("row-dbclick",e);
+      }
+     lastClickTime= e.event.timeStamp
     },
     addItem(data) {
       if (data.value == "all") {
